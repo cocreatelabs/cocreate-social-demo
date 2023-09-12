@@ -103,14 +103,6 @@ export default function Home() {
           <Box>
             <ConnectTikTok />
           </Box>
-          {/* <Button
-            _hover={{ bgColor: "gray.700" }}
-            bgColor='#000000'
-            color='white'
-            leftIcon={<FaTiktok />}
-          >
-            Connect Your TikTok Account
-          </Button> */}
         </VStack>
       </main>
     </>
