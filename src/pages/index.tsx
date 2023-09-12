@@ -4,6 +4,7 @@ import { SocialButton } from "../components/SocialButton";
 import Head from "next/head";
 import { FaDiscord, FaInstagram, FaTwitter } from "react-icons/fa";
 import { discord, twitter } from "@usecocreate/sdk";
+import ConnectTikTok from "../components/ConnectTikTok";
 
 export default function Home() {
   const { username: discordUsername, disconnect: disconnectDiscord } =
@@ -99,6 +100,9 @@ export default function Home() {
             />
           </Box>
 
+          <Box>
+            <ConnectTikTok />
+          </Box>
           {/* <Button
             _hover={{ bgColor: "gray.700" }}
             bgColor='#000000'
