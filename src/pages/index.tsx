@@ -67,6 +67,7 @@ export default function Home() {
                 onClick={disconnectTwitter}
                 colorScheme='red'
                 variant='link'
+                textDecoration={"underline"}
               >
                 Disconnect
               </Button>
