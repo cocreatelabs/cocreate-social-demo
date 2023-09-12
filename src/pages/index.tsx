@@ -1,35 +1,19 @@
-import { Box, Button, Center, Text, VStack } from "@chakra-ui/react";
-import { discord, twitter } from "@usecocreate/sdk";
+import { Box, VStack, Center, Text } from "@chakra-ui/react";
+import { useSocialAccount } from "../useSocialAccount";
+import { SocialButton } from "../components/SocialButton";
 import Head from "next/head";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import { FaDiscord, FaInstagram, FaTiktok, FaTwitter } from "react-icons/fa";
+import { FaDiscord, FaInstagram, FaTwitter } from "react-icons/fa";
+import { discord, twitter } from "@usecocreate/sdk";
 
 export default function Home() {
-  const router = useRouter();
+  const { username: discordUsername, disconnect: disconnectDiscord } =
+    useSocialAccount("discord_username", "discord_username");
 
-  const { discord_username } = router.query;
+  const { username: twitterUsername, disconnect: disconnectTwitter } =
+    useSocialAccount("twitter_username", "twitter_username");
 
-  const [discordUsername, setDiscordUsername] = useState<null | string>(null);
-
-  useEffect(() => {
-    const storedDiscordUsername = localStorage.getItem("discord_username");
-    if (storedDiscordUsername) {
-      setDiscordUsername(storedDiscordUsername);
-    }
-  }, [discord_username]);
-
-  useEffect(() => {
-    if (discord_username) {
-      const username = Array.isArray(discord_username)
-        ? discord_username[0]
-        : discord_username;
-      localStorage.setItem("discord_username", username);
-      setDiscordUsername(username);
-      // clear query params from url
-      router.push("/");
-    }
-  }, [discord_username, router]);
+  const { username: instagramUsername, disconnect: disconnectInstagram } =
+    useSocialAccount("instagram_username", "instagram_username");
 
   const connectDiscord = () => {
     const link = discord.connectDiscordLink({
@@ -42,34 +26,6 @@ export default function Home() {
     window.location.href = link;
   };
 
-  const disconnectDiscord = () => {
-    localStorage.removeItem("discord_username");
-    setDiscordUsername(null);
-  };
-
-  const { twitter_username } = router.query;
-
-  const [twitterUsername, setTwitterUsername] = useState<null | string>(null);
-
-  useEffect(() => {
-    const storedTwitterUsername = localStorage.getItem("twitter_username");
-    if (storedTwitterUsername) {
-      setTwitterUsername(storedTwitterUsername);
-    }
-  }, [twitter_username]);
-
-  useEffect(() => {
-    if (twitter_username) {
-      const username = Array.isArray(twitter_username)
-        ? twitter_username[0]
-        : twitter_username;
-      localStorage.setItem("twitter_username", username);
-      setTwitterUsername(username);
-      // clear query params from url
-      router.push("/");
-    }
-  }, [twitter_username, router]);
-
   const connectTwitter = () => {
     const link = twitter.connectTwitterLink({
       clientId: "026086c8-86fa-46d8-b34b-4e4f284450dc",
@@ -80,36 +36,6 @@ export default function Home() {
     });
     window.location.href = link;
   };
-
-  const disconnectTwitter = () => {
-    localStorage.removeItem("twitter_username");
-    setTwitterUsername(null);
-  };
-
-  const { instagram_username } = router.query;
-
-  const [instagramUsername, setInstagramUsername] = useState<null | string>(
-    null
-  );
-
-  useEffect(() => {
-    const storedInstagramUsername = localStorage.getItem("instagram_username");
-    if (storedInstagramUsername) {
-      setInstagramUsername(storedInstagramUsername);
-    }
-  }, [instagram_username]);
-
-  useEffect(() => {
-    if (instagram_username) {
-      const username = Array.isArray(instagram_username)
-        ? instagram_username[0]
-        : instagram_username;
-      localStorage.setItem("instagram_username", username);
-      setInstagramUsername(username);
-      // clear query params from url
-      router.push("/");
-    }
-  }, [instagram_username, router]);
 
   const connectInstagram = () => {
     const apiUrl = "https://dev-backend.aws.usecocreate.io";
@@ -128,11 +54,6 @@ export default function Home() {
     window.location.href = link;
   };
 
-  const disconnectInstagram = () => {
-    localStorage.removeItem("instagram_username");
-    setInstagramUsername(null);
-  };
-
   return (
     <>
       <Head>
@@ -146,96 +67,46 @@ export default function Home() {
             <Text fontSize='4xl'>Co:Create Social Integrations Demo</Text>
           </Center>
           <Box>
-            {twitterUsername ? (
-              <Text as='span' fontSize='l'>
-                Successfully connected Twitter Account:{" "}
-                <Text as='span' fontWeight='bold'>
-                  {twitterUsername}.
-                </Text>
-                {"   "}
-                <Button
-                  onClick={disconnectTwitter}
-                  colorScheme='red'
-                  variant='link'
-                  textDecoration={"underline"}
-                >
-                  Disconnect
-                </Button>
-              </Text>
-            ) : (
-              <Button
-                onClick={connectTwitter}
-                leftIcon={<FaTwitter />}
-                colorScheme='twitter'
-              >
-                Connect Your Twitter Account
-              </Button>
-            )}
+            <SocialButton
+              username={twitterUsername}
+              connectAction={connectTwitter}
+              disconnectAction={disconnectTwitter}
+              icon={<FaTwitter />}
+              colorScheme='twitter'
+              serviceName='Twitter'
+            />
           </Box>
 
           <Box>
-            {discordUsername ? (
-              <Text as='span' fontSize='l'>
-                Successfully connected Discord Account:{" "}
-                <Text as='span' fontWeight='bold'>
-                  {discordUsername}.
-                </Text>
-                {"   "}
-                <Button
-                  onClick={disconnectDiscord}
-                  colorScheme='red'
-                  variant='link'
-                  textDecoration={"underline"}
-                >
-                  Disconnect
-                </Button>
-              </Text>
-            ) : (
-              <Button
-                onClick={connectDiscord}
-                leftIcon={<FaDiscord />}
-                colorScheme='purple'
-              >
-                Connect Your Discord Account
-              </Button>
-            )}
+            <SocialButton
+              username={discordUsername}
+              connectAction={connectDiscord}
+              disconnectAction={disconnectDiscord}
+              icon={<FaDiscord />}
+              colorScheme='purple'
+              serviceName='Discord'
+            />
           </Box>
 
           <Box>
-            {instagramUsername ? (
-              <Text as='span' fontSize='l'>
-                Successfully connected Instagram Account:{" "}
-                <Text as='span' fontWeight='bold'>
-                  {instagramUsername}.
-                </Text>
-                {"   "}
-                <Button
-                  onClick={disconnectInstagram}
-                  colorScheme='red'
-                  variant='link'
-                  textDecoration={"underline"}
-                >
-                  Disconnect
-                </Button>
-              </Text>
-            ) : (
-              <Button
-                onClick={connectInstagram}
-                leftIcon={<FaInstagram />}
-                colorScheme='pink'
-              >
-                Connect Your Instagram Account
-              </Button>
-            )}
+            <SocialButton
+              username={instagramUsername}
+              connectAction={connectInstagram}
+              disconnectAction={disconnectInstagram}
+              icon={<FaInstagram />}
+              colorScheme='pink'
+              serviceName='Instagram'
+            />
           </Box>
-          <Button
+
+          {/* <Button
             _hover={{ bgColor: "gray.700" }}
             bgColor='#000000'
             color='white'
             leftIcon={<FaTiktok />}
           >
             Connect Your TikTok Account
-          </Button>
+          </Button> */}
         </VStack>
       </main>
     </>
