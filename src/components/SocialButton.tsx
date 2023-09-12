@@ -5,7 +5,7 @@ interface SocialButtonProps {
   username: string | null;
   connectAction: () => void;
   disconnectAction: () => void;
-  icon: React.ReactNode;
+  icon: React.ReactElement;
   colorScheme: string;
   serviceName: string;
 }

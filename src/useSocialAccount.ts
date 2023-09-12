@@ -11,7 +11,7 @@ export const useSocialAccount = (key: string, queryKey: string) => {
     if (storedUsername) {
       setUsername(storedUsername);
     }
-  }, [queryValue]);
+  }, [queryValue, key]);
 
   useEffect(() => {
     if (queryValue) {
@@ -22,7 +22,7 @@ export const useSocialAccount = (key: string, queryKey: string) => {
       setUsername(actualValue);
       router.push("/");
     }
-  }, [queryValue, router]);
+  }, [queryValue, router, key]);
 
   const disconnect = () => {
     localStorage.removeItem(key);
